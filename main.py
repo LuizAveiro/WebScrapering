@@ -1,8 +1,13 @@
-import requests
-from bs4 import BeautifulSoup
-
+from scraper import (
+    acessar_site,
+    criar_soup,
+    pegar_titulo,
+    pegar_h1,
+    pegar_paragrafos,
+    pegar_link
+)
 # Acessa o site
-resposta = requests.get("https://example.com")
+resposta = acessar_site("https://example.com")
 
 # Verifica se funcionou
 print("STATUS:")
@@ -11,24 +16,22 @@ print(resposta)
 print("-" * 30)
 
 # Analisa o HTML
-soup = BeautifulSoup(resposta.text, "html.parser")
+soup = criar_soup(resposta)
 
 # Título
 print("TITLE:")
-print(soup.title.text)
+print(pegar_titulo(soup))
 
 print("-" * 30)
 
 # H1
-titulo = soup.find("h1")
-
 print("H1:")
-print(titulo.text)
+print(pegar_h1(soup))
 
 print("-" * 30)
 
 # Parágrafo
-paragrafos = soup.find_all("p")
+paragrafos = pegar_paragrafos(soup)
 print("PARÁGRAFO:")
 print(paragrafos)
 
@@ -39,7 +42,7 @@ for paragrafo in paragrafos:
     
 print("-" * 30)
 
-link = soup.find("a")
+link = pegar_link(soup)
 print(link.text)
 
 print(link["href"])
