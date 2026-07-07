@@ -1,48 +1,37 @@
-from scraper import (
-    acessar_site,
-    criar_soup,
-    pegar_titulo,
-    pegar_h1,
-    pegar_paragrafos,
-    pegar_link
-)
-# Acessa o site
-resposta = acessar_site("https://example.com")
+import pandas as pd
 
-# Verifica se funcionou
-print("STATUS:")
-print(resposta)
+from scraper import acessar_site, criar_soup, pegar_livros
 
-print("-" * 30)
 
-# Analisa o HTML
-soup = criar_soup(resposta)
+todos_livros = []
 
-# Título
-print("TITLE:")
-print(pegar_titulo(soup))
 
-print("-" * 30)
+for pagina in range(1, 51):
 
-# H1
-print("H1:")
-print(pegar_h1(soup))
+    url = f"https://books.toscrape.com/catalogue/page-{pagina}.html"
 
-print("-" * 30)
+    print(f"Coletando página {pagina}...")
 
-# Parágrafo
-paragrafos = pegar_paragrafos(soup)
-print("PARÁGRAFO:")
-print(paragrafos)
+    resposta = acessar_site(url)
 
-print("-" * 30)
+    if resposta.status_code == 200:
 
-for paragrafo in paragrafos:
-    print(paragrafo)
-    
-print("-" * 30)
+        soup = criar_soup(resposta)
 
-link = pegar_link(soup)
-print(link.text)
+        livros = pegar_livros(soup)
 
-print(link["href"])
+        todos_livros.extend(livros)
+
+    else:
+
+        print(f"Erro ao acessar a página {pagina}")
+
+
+tabela = pd.DataFrame(todos_livros)
+
+tabela.to_excel("livros.xlsx", index=False)
+
+
+print("Dados coletados com sucesso!")
+
+print(f"Total de livros coletados: {len(todos_livros)}")
